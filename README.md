@@ -36,7 +36,7 @@ pest --watch
 
 This will restart Pest whenever a file in `src`, `app` or `tests` changes.
 
-You can ovverride the default paths by providing your own paths, for example inside your `Pest.php` file:
+You can override the default paths by providing your own paths, for example inside your `Pest.php` file:
 
 ```php
 Petecoop\PestWatch\Plugin::directories(['src', 'tests', 'custom-dir']);
