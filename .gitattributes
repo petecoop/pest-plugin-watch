@@ -1,0 +1,6 @@
+.editorconfig            export-ignore
+.gitattributes           export-ignore
+.gitignore               export-ignore
+README.md                export-ignore
+bun.lock                 export-ignore
+package.json             export-ignore

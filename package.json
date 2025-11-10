@@ -1,0 +1,6 @@
+{
+  "dependencies": {},
+  "devDependencies": {
+    "chokidar": "^4.0.3"
+  }
+}

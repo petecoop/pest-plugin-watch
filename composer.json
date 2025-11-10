@@ -1,0 +1,44 @@
+{
+    "name": "petecoop/pest-plugin-watch",
+    "description": "A Pest plugin to watch your files and re-run tests on changes.",
+    "keywords": [
+        "pest",
+        "plugin",
+        "watch",
+        "test watcher"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/petecoop/pest-plugin-watch",
+    "authors": [
+        {
+            "name": "Pete Cooper",
+            "email": "pete@petecoop.co.uk"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "pestphp/pest": "^4.0.0",
+        "pestphp/pest-plugin": "^4.0.0",
+        "spatie/file-system-watcher": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Petecoop\\PestWatch\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "pest": {
+            "plugins": [
+                "Petecoop\\PestWatch\\Plugin"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
