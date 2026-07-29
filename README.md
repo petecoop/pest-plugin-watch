@@ -34,10 +34,25 @@ To start Pest in watch mode, run the following command:
 pest --watch
 ```
 
-This will restart Pest whenever a file in `src`, `app` or `tests` changes.
+This will restart Pest whenever a file in `src`, `app`, `tests` or `resources/views` changes.
 
 You can override the default paths by providing your own paths, for example inside your `Pest.php` file:
 
 ```php
 Petecoop\PestWatch\Plugin::directories(['src', 'tests', 'custom-dir']);
+```
+
+### Code coverage with Laravel Herd
+
+The watcher preserves the PHP binary and configuration that started it. This
+allows coverage to be collected on every rerun when using Laravel Herd:
+
+```bash
+herd coverage vendor/bin/pest --coverage --watch
+```
+
+and allows `--tia` to work with the watcher:
+
+```bash
+herd coverage vendor/bin/pest --tia --watch
 ```

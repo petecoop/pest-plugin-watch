@@ -4,3 +4,5 @@
 README.md                export-ignore
 bun.lock                 export-ignore
 package.json             export-ignore
+mago.toml                export-ignore
+.release-it.json         export-ignore

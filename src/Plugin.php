@@ -17,7 +17,7 @@ use Symfony\Component\Process\Process;
  */
 final class Plugin implements HandlesOriginalArguments
 {
-    protected static $directories = ['app', 'src', 'tests'];
+    protected static $directories = ['app', 'src', 'tests', 'resources/views'];
 
     private const WATCH_OPTION = 'watch';
 
@@ -32,7 +32,7 @@ final class Plugin implements HandlesOriginalArguments
         private OutputInterface $output,
     ) {
         // remove non-existing directories from watched directories
-        $this->watchedDirectories = array_filter(self::$directories, fn($directory) => is_dir($directory));
+        $this->watchedDirectories = array_filter(self::$directories, fn ($directory) => is_dir($directory));
     }
 
     public static function directories(array $directories): void
@@ -42,7 +42,7 @@ final class Plugin implements HandlesOriginalArguments
 
     public function handleOriginalArguments(array $originals): void
     {
-        if (!$this->userWantsToWatch($originals)) {
+        if (! $this->userWantsToWatch($originals)) {
             return;
         }
 
@@ -57,7 +57,7 @@ final class Plugin implements HandlesOriginalArguments
         $processStarted = $this->startPest();
 
         // if the process failed to start, exit
-        if (!$processStarted) {
+        if (! $processStarted) {
             exit(1);
         }
 
@@ -88,7 +88,7 @@ final class Plugin implements HandlesOriginalArguments
 
         $input = new ArgvInput($arguments, new InputDefinition($inputs));
 
-        if (!$input->hasParameterOption(sprintf('--%s', self::WATCH_OPTION))) {
+        if (! $input->hasParameterOption(sprintf('--%s', self::WATCH_OPTION))) {
             return false;
         }
 
@@ -106,24 +106,51 @@ final class Plugin implements HandlesOriginalArguments
 
     private function listenForChanges(): self
     {
-        Watch::paths(...$this->watchedDirectories)->onAnyChange(function (string $event, string $path) {
-            if ($this->changedPathShouldRestartPest($path)) {
-                $this->restartPest();
-            }
-        })->start();
+        Watch::paths(...$this->watchedDirectories)
+            ->onAnyChange(function (string $event, string $path) {
+                if ($this->changedPathShouldRestartPest($path)) {
+                    $this->restartPest();
+                }
+            })
+            ->start();
 
         return $this;
     }
 
     private function startPest(): bool
     {
-        $this->pestProcess = Process::fromShellCommandline($this->getCommand());
+        $this->pestProcess = Process::fromShellCommandline($this->getProcessCommand());
 
         $this->pestProcess->setTty(true)->setTimeout(null);
 
-        $this->pestProcess->start(fn($type, $output) => $this->output->write($output));
+        $this->pestProcess->start(fn ($type, $output) => $this->output->write($output));
 
         return $this->pestProcess->isStarted();
+    }
+
+    /**
+     * Builds the command used for each Pest run.
+     *
+     * Pest's executable uses its own shebang to find PHP. That loses the
+     * configuration of the PHP process which started the watcher, including
+     * Herd's coverage-enabled Xdebug configuration. Explicitly running Pest
+     * with the current binary and loaded ini keeps each restart consistent
+     * with the original invocation.
+     */
+    private function getProcessCommand(): string
+    {
+        $ini = php_ini_loaded_file();
+
+        if ($ini === false) {
+            return $this->getCommand();
+        }
+
+        return sprintf(
+            '%s -c %s %s',
+            escapeshellarg(PHP_BINARY),
+            escapeshellarg($ini),
+            $this->getCommand(),
+        );
     }
 
     private function restartPest(): self
