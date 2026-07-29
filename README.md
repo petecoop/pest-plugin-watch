@@ -2,7 +2,7 @@
 
 A Pest plugin to watch files and restart Pest when they change.
 
-This is a Pest Watch plugin that works with Pest v4 and differs from the official Pest Watch plugin which became unsupported. It's now built on the `spatie/file-system-watcher` package which uses the node package `chokidar` under the hood for efficient file watching.
+This is a Pest Watch plugin that works with Pest v4 & v5 and differs from the official Pest Watch plugin which became unsupported. It's now built on the `spatie/file-system-watcher` package which uses the node package `chokidar` under the hood for efficient file watching.
 
 ## Installation
 
