@@ -23,7 +23,7 @@ class Watch extends \Spatie\Watcher\Watch
     {
         $command = [
             (new ExecutableFinder)->find($this->isBunProject() ? 'bun' : 'node'),
-            realpath(__DIR__.'/../bin/file-watcher.js'),
+            realpath(__DIR__.'/../bin/file-watcher.mjs'),
             json_encode($this->paths),
         ];
 
